@@ -1,0 +1,354 @@
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>简洁待办事项</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
+            body {
+                font-family: 'Noto Sans SC', "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff0f5; /* 浅粉色背景 */
+                background-image: url('https://example.com/pink-flowers-pattern.png'); /* 替换为实际的粉色花朵图案URL */
+                background-repeat: repeat;
+            }
+            h1 {
+                text-align: center;
+                color: #ff69b4; /* 粉红色标题 */
+                font-family: 'Brush Script MT', cursive; /* 更改为更少女风格的字体 */
+                font-size: 48px; /* 增大字体大小 */
+                margin-bottom: 30px; /* 增加底部边距 */
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* 添加轻微阴影效果 */
+            }
+            #todo-form {
+                display: flex;
+                margin-bottom: 20px;
+            }
+            #todo-input {
+                flex-grow: 1;
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ddd;
+                border-radius: 4px 0 0 4px;
+            }
+            #add-btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #FF69B4; /* 粉红色按钮 */
+                color: white;
+                border: none;
+                border-radius: 0 4px 4px 0;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            #add-btn:hover {
+                background-color: #FF1493; /* 鼠标悬停时变为深粉色 */
+            }
+            #todo-list {
+                list-style-type: none;
+                padding: 0;
+            }
+            .todo-item {
+                background-color: white;
+                padding: 8px; /* 稍微减小内边距 */
+                margin-bottom: 5px; /* 将底部外边距从10px减小到5px */
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+            }
+            .todo-item input[type="checkbox"] {
+                margin-right: 10px;
+            }
+            .todo-item .todo-text {
+                flex-grow: 1;
+            }
+            .todo-item .delete-btn {
+                background-color: #FFCCCB; /* 淡红色 */
+                color: #8B0000; /* 深红色文字 */
+                border: none;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .todo-item .delete-btn:hover {
+                background-color: #f44336; /* 鼠标悬停时变为红色 */
+                color: white; /* 鼠标悬停时文字变为白色 */
+            }
+            .container {
+                display: flex;
+                justify-content: space-between;
+                background-color: rgba(255, 255, 255, 0.8);
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .todo-container {
+                flex: 2;
+                margin-right: 20px;
+            }
+            .calendar-container {
+                flex: 1;
+            }
+            #calendar {
+                background-color: white;
+                padding: 10px;
+                border-radius: 4px;
+            }
+            #calendar table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            #calendar th, #calendar td {
+                text-align: center;
+                padding: 5px;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            #calendar th {
+                background-color: #f0f0f0;
+            }
+            #calendar td:hover {
+                background-color: #FFF0F5; /* 鼠标悬停时的背景色 */
+            }
+            #calendar-title {
+                text-align: center;
+                color: #FF69B4;
+                margin-bottom: 10px;
+            }
+            .countdown {
+                text-align: right;
+                margin-top: 10px;
+                font-size: 14px;
+                color: #FF69B4;
+            }
+            .italian-greeting {
+                text-align: center;
+                margin-top: 15px;
+                margin-bottom: 5px;
+                font-size: 24px; /* 增大字体大小 */
+                color: #FF69B4;
+                font-family: 'Brush Script MT', cursive; /* 使用与h1相同的字体 */
+                font-style: normal; /* 移除斜体 */
+            }
+            .save-btn {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                background-color: #FF69B4; /* 改为粉红色 */
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .save-btn:hover {
+                background-color: #FF1493; /* 鼠标悬停时变为深粉色 */
+            }
+            .tag {
+                font-size: 12px;
+                padding: 2px 5px;
+                border-radius: 3px;
+                margin-right: 5px;
+                color: white;
+            }
+            .tag-电子产品 { background-color: #FF69B4; } /* 粉红色 */
+            .tag-日用品 { background-color: #FFB6C1; } /* 浅粉红色 */
+            .tag-衣物 { background-color: #FFC0CB; } /* 粉色 */
+            .tag-药品 { background-color: #FF1493; } /* 深粉红色 */
+            .tag-证件预订单 { background-color: #DB7093; } /* 苍白的紫罗兰红色 */
+        </style>
+    </head>
+    <body>
+        <h1>Rachel's todo list</h1>
+        <div class="container">
+            <div class="todo-container">
+                <form id="todo-form">
+                    <input type="text" id="todo-input" placeholder="输入新的待办事项..." required>
+                    <select id="todo-tag">
+                        <option value="电子产品">电子产品</option>
+                        <option value="日用品">日用品</option>
+                        <option value="衣物">衣物</option>
+                        <option value="药品">药品</option>
+                        <option value="证件预订单">证件预订单</option>
+                    </select>
+                    <button type="submit" id="add-btn">新增</button>
+                </form>
+                <button id="save-btn" class="save-btn">保存</button>
+                <ul id="todo-list"></ul>
+            </div>
+            <div class="calendar-container">
+                <h2 id="calendar-title"></h2>
+                <div id="calendar"></div>
+                <div id="italian-greeting" class="italian-greeting">Ciao Italia!</div>
+                <div id="countdown" class="countdown"></div>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById('todo-form');
+            const input = document.getElementById('todo-input');
+            const todoList = document.getElementById('todo-list');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const text = input.value;
+                const tag = document.getElementById('todo-tag').value;
+                addTodo(text, tag);
+                input.value = '';
+            });
+
+            function addTodo(text, tag) {
+                const li = document.createElement('li');
+                li.className = 'todo-item';
+                li.innerHTML = `
+                    <input type="checkbox">
+                    <span class="tag tag-${tag}">${tag}</span>
+                    <span class="todo-text">${text}</span>
+                    <button class="delete-btn">删除</button>
+                `;
+                
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', function() {
+                    li.querySelector('.todo-text').style.textDecoration = this.checked ? 'line-through' : 'none';
+                    saveTodos();
+                });
+
+                const deleteBtn = li.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', function() {
+                    li.remove();
+                    saveTodos();
+                });
+
+                todoList.appendChild(li);
+                sortTodos();
+                saveTodos();
+            }
+
+            function saveTodos() {
+                const todos = [];
+                document.querySelectorAll('.todo-item').forEach(item => {
+                    todos.push({
+                        text: item.querySelector('.todo-text').textContent,
+                        completed: item.querySelector('input[type="checkbox"]').checked,
+                        tag: item.querySelector('.tag').textContent
+                    });
+                });
+                localStorage.setItem('todos', JSON.stringify(todos));
+                console.log('待办事项已保存:', todos);
+            }
+
+            function loadTodos() {
+                const todos = JSON.parse(localStorage.getItem('todos')) || [];
+                console.log('待办事项已加载:', todos);
+                todoList.innerHTML = ''; // 清空现有的待办事项
+                todos.forEach(todo => {
+                    addTodo(todo.text, todo.tag);
+                    const lastItem = todoList.lastElementChild;
+                    lastItem.querySelector('input[type="checkbox"]').checked = todo.completed;
+                    lastItem.querySelector('.todo-text').style.textDecoration = todo.completed ? 'line-through' : 'none';
+                });
+            }
+
+            function sortTodos() {
+                const todos = Array.from(todoList.children);
+                todos.sort((a, b) => {
+                    const tagA = a.querySelector('.tag').textContent;
+                    const tagB = b.querySelector('.tag').textContent;
+                    return tagA.localeCompare(tagB);
+                });
+                todos.forEach(todo => todoList.appendChild(todo));
+            }
+
+            // 确保在页面加载时调用 loadTodos
+            document.addEventListener('DOMContentLoaded', function() {
+                loadTodos();
+                updateCountdown();
+            });
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.addEventListener('click', function() {
+                saveTodos();
+                alert('待办事项已保存!');
+                console.log('Save button clicked'); // 添加日志
+            });
+
+            // 新增日历代码
+            function createCalendar(elem, year, month) {
+                let monthNames = ["一月", "二月", "三月", "四月", "五月", "六月",
+                                "七月", "八月", "九月", "十月", "十一月", "十二月"];
+                
+                document.getElementById('calendar-title').textContent = `${year}年 ${monthNames[month - 1]}`;
+                
+                let mon = month - 1;
+                let d = new Date(year, mon);
+                let today = new Date();
+                let table = '<table><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr><tr>';
+
+                for (let i = 0; i < getDay(d); i++) {
+                    table += '<td></td>';
+                }
+
+                while (d.getMonth() == mon) {
+                    if (d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear()) {
+                        table += '<td style="background-color: #FFB6C1; color: #FF1493;">' + d.getDate() + '</td>'; // 今天的日期标记为粉色
+                    } else {
+                        table += '<td>' + d.getDate() + '</td>';
+                    }
+                    if (getDay(d) % 7 == 6) {
+                        table += '</tr><tr>';
+                    }
+                    d.setDate(d.getDate() + 1);
+                }
+
+                if (getDay(d) != 0) {
+                    for (let i = getDay(d); i < 7; i++) {
+                        table += '<td></td>';
+                    }
+                }
+
+                table += '</tr></table>';
+                elem.innerHTML = table;
+            }
+
+            function getDay(date) {
+                let day = date.getDay();
+                if (day == 0) day = 7;
+                return day - 1;
+            }
+
+            let today = new Date();
+            createCalendar(document.getElementById('calendar'), today.getFullYear(), today.getMonth() + 1);
+
+            function updateCountdown() {
+                const now = new Date();
+                const targetDate = new Date('2024-09-30T00:00:00');
+                const timeDifference = targetDate - now;
+                const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+                
+                const countdownElement = document.getElementById('countdown');
+                countdownElement.textContent = `${days} 天`;
+            }
+
+            // 初始更新倒计时
+            updateCountdown();
+
+            // 每天更新一次倒计时
+            setInterval(updateCountdown, 24 * 60 * 60 * 1000);
+
+            // 在DOMContentLoaded事件中添加倒计时更新
+            document.addEventListener('DOMContentLoaded', function() {
+                loadTodos();
+                updateCountdown();
+            });
+        </script>
+    </body>
+    </html>
